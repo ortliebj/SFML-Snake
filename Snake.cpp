@@ -1,6 +1,8 @@
 #include "Snake.hpp"
 #include "Food.hpp"
 
+#include <iostream>
+
 enum directions {right, left, up, down};
 
 Snake::Snake() {
@@ -36,21 +38,34 @@ void Snake::moveSnake() {
     snake.push_front(head);
 }
 
+/*
+ * Draw the whole snake to the window
+ */
 void Snake::drawSnake(sf::RenderWindow &w) {
     for (auto const& i : snake) {
         w.draw(i);
     }
 }
 
+/*
+ * Returns the length of the snake. Same as score - 6 (initial size).
+ */
 int Snake::getLength() {
     return snake.size();
 }
 
+/*
+ * Check if the snake ate. Returns true if it did.
+ */
 bool Snake::didEat(Food *f) {
     sf::Vector2f head = snake.front().getPosition();
     return head.x == f->getPos().x && head.y == f->getPos().y;
 }
 
+/*
+ * Check collision between snake and itself, and snake and the walls.
+ * Returns true on collision.
+ */
 bool Snake::didCollide(sf::RenderWindow &w) {
     for (auto it = std::next(snake.begin(), 1); it != snake.end(); ++it) {
         // Did snake collide with itself?
@@ -70,6 +85,9 @@ bool Snake::didCollide(sf::RenderWindow &w) {
     return false;
 }
 
+/*
+ * Add a new square to the front of the snake.
+ */
 void Snake::pushFront() {
     sf::RectangleShape rect(sf::Vector2f(CELL, CELL));
     sf::Vector2f currHead(snake.front().getPosition());
@@ -88,10 +106,16 @@ void Snake::pushFront() {
 
 }
 
+/*
+ * Removes the tail of the snake.
+ */
 void Snake::popBack() {
     snake.pop_back();
 }
 
+/*
+ * Set the member variable on change in direction.
+ */
 void Snake::changeDir(int d) {
     dir = d;
 }

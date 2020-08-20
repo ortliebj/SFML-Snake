@@ -7,21 +7,26 @@
 GameController::GameController(sf::RenderWindow &w)
     : window(w) {
     isPlaying = false;
+    highScore = 0;
+    // Load arial font - only supports macos path right now
+    font.loadFromFile("/Library/Fonts/Arial Unicode.ttf");
 }
 
 void GameController::newGame() {
-    Game game(window);
+    Game game(window, font, highScore);
     game.start();
+
+    // update highscore if needed
+    if (game.getScore() > highScore) {
+        highScore = game.getScore();
+    }
+
     isPlaying = false;
 }
 
 void GameController::gameOver() {
-    // create new window
+    // recreate window
     window.create(sf::VideoMode(CELL*NUM_CELLS, CELL*NUM_CELLS), "Snake");
-
-    // Load arial font - only supports macos path right now
-    sf::Font font;
-    font.loadFromFile("/Library/Fonts/Arial Unicode.ttf");
 
     sf::Text gameOverText;
     gameOverText.setFont(font);

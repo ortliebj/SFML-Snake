@@ -14,12 +14,15 @@ public:
     // Show the "game over" screen
     void gameOver();
 
-    // returns 'isPlaying' - wheather or not a game is active
+    // returns 'isPlaying' - whether or not a game is active
     bool gameIsActive();
 
 private:
     sf::RenderWindow &window;
+    sf::Font font;
+
     bool isPlaying;
+    int highScore;
 };
 
 #endif /* GAMECONTROLLER_HPP */

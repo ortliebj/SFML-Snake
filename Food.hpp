@@ -17,7 +17,7 @@ public:
     sf::Vector2f getPos();
 
     // Returns the food itself
-    sf::RectangleShape getFood();
+    //sf::RectangleShape getFood();
 
     // Draws food to the window
     void drawFood(sf::RenderWindow &w);

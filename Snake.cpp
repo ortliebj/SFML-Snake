@@ -1,10 +1,6 @@
 #include "Snake.hpp"
 #include "Food.hpp"
 
-#include <iostream>
-
-enum directions {right, left, up, down};
-
 Snake::Snake() {
     dir = directions::right;
 
@@ -15,10 +11,56 @@ Snake::Snake() {
     }
 }
 
+/*
+ * Draw the whole snake to the window
+ */
+void Snake::drawSnake(sf::RenderWindow &w) {
+    for (auto const& i : snake) {
+        w.draw(i);
+    }
+}
+
+/*
+ * Check collision between snake and itself, and snake and the walls.
+ * Returns true on collision.
+ */
+bool Snake::didCollide(sf::RenderWindow &w) {
+    for (auto it = std::next(snake.begin(), 1); it != snake.end(); ++it) {
+        // Did snake collide with itself?
+        if (it->getPosition() == snake.front().getPosition()) {
+            return true;
+        }
+    }
+
+    // these bottom two things can be combined
+
+    // Did snake collide with the walls?
+    if (snake.front().getPosition().x >= w.getSize().x || // right wall
+        snake.front().getPosition().y >= w.getSize().y || // bottom wall
+        snake.front().getPosition().x < 0 ||  // left wall
+        snake.front().getPosition().y < 0) { // top wall
+        return true;
+    }
+    // Didn't collide
+    return false;
+}
+
+/*
+ * Check if the snake's head occupies the same square as Food'.
+ * Returns true if it is.
+ */
+bool Snake::didEat(Food *f) {
+    sf::Vector2f head = snake.front().getPosition();
+    return head.x == f->getPos().x && head.y == f->getPos().y;
+}
+
+/*
+ * Adds a new head to the snake taking into account
+ * the direction it is moving.
+ */
 void Snake::moveSnake() {
     float dx = 0; // change in x position
     float dy = 0; // change in y position
-
 
     if (dir == directions::right) dx += CELL;
     if (dir == directions::left) dx -= CELL;
@@ -39,51 +81,11 @@ void Snake::moveSnake() {
 }
 
 /*
- * Draw the whole snake to the window
- */
-void Snake::drawSnake(sf::RenderWindow &w) {
-    for (auto const& i : snake) {
-        w.draw(i);
-    }
-}
-
-/*
  * Returns the length of the snake. Same as score - 6 (initial size).
  */
-int Snake::getLength() {
-    return snake.size();
-}
-
-/*
- * Check if the snake ate. Returns true if it did.
- */
-bool Snake::didEat(Food *f) {
-    sf::Vector2f head = snake.front().getPosition();
-    return head.x == f->getPos().x && head.y == f->getPos().y;
-}
-
-/*
- * Check collision between snake and itself, and snake and the walls.
- * Returns true on collision.
- */
-bool Snake::didCollide(sf::RenderWindow &w) {
-    for (auto it = std::next(snake.begin(), 1); it != snake.end(); ++it) {
-        // Did snake collide with itself?
-        if (it->getPosition() == snake.front().getPosition()) {
-            return true;
-        }
-    }
-
-    // these bottom two things can be combined
-
-    // Did snake collide with the walls?
-    if (snake.front().getPosition().x >= w.getSize().x || snake.front().getPosition().y >= w.getSize().y) {
-        return true;
-    }
-
-    // Didn't collide
-    return false;
-}
+//int Snake::getLength() {
+//    return snake.size();
+//}
 
 /*
  * Add a new square to the front of the snake.
@@ -103,7 +105,6 @@ void Snake::pushFront() {
     rect.setFillColor(sf::Color::Black);
     rect.setPosition(sf::Vector2f(newX, newY));
     snake.push_front(rect);
-
 }
 
 /*
@@ -118,4 +119,11 @@ void Snake::popBack() {
  */
 void Snake::changeDir(int d) {
     dir = d;
+}
+
+/*
+ * returns the snake's direction
+ */
+int Snake::getDir() {
+    return dir;
 }

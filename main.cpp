@@ -14,7 +14,6 @@ int main(int, char const**) {
                 window.close();
         }
 
-
         if (controller.gameIsActive()) {
             controller.newGame();
         }
